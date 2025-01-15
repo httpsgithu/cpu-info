@@ -1,44 +1,24 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-
-    dependencies {
-        classpath(Libs.androidGradlePlugin)
-        classpath(Libs.gradleVersionsPlugin)
-        classpath(Libs.Kotlin.gradlePlugin)
-        classpath(Libs.Hilt.gradlePlugin)
-    }
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.dependencyUpdate)
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kover)
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.androidTest) apply false
+    alias(libs.plugins.baselineprofile) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.compose.multiplatform) apply false
 }
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-apply(plugin = "com.github.ben-manes.versions")
 
 subprojects {
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            @Suppress("SuspiciousCollectionReassignment")
-            freeCompilerArgs += listOf(
-                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-opt-in=kotlinx.coroutines.FlowPreview",
-                "-opt-in=kotlin.Experimental",
-                "-P",
-                "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true",
-            )
-            allWarningsAsErrors = true
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
+    tasks.withType<KotlinCompile>().all {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
         }
     }
 }
