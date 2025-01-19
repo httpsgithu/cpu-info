@@ -1,12 +1,11 @@
-import java.util.*
-
 enum class ReleaseType(private val level: Int) {
     SNAPSHOT(0),
     DEV(1),
     ALPHA(10),
     BETA(20),
     RC(60),
-    RELEASE(100);
+    RELEASE(100),
+    ;
 
     fun isEqualOrMoreStableThan(other: ReleaseType): Boolean = level >= other.level
 
@@ -23,7 +22,7 @@ object DependencyUpdates {
 
     @JvmStatic
     fun versionToRelease(version: String): ReleaseType {
-        val stableKeyword = stableKeywords.any { version.toUpperCase(Locale.ROOT).contains(it) }
+        val stableKeyword = stableKeywords.any { version.uppercase().contains(it) }
         if (stableKeyword) return ReleaseType.RELEASE
 
         return when {
